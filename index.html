@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<!-- saved from url=(0058)file:///C:/Users/%D0%A0%D0%A1/Downloads/birthday-card.html -->
+<html lang="uk"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>З Днем Народження!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="./З Днем Народження!_files/css2" rel="stylesheet">
+<style>
+
+  /* ============ НАЛАШТУВАННЯ (можна редагувати) ============ */
+  /* Ім'я сестри та підпис задаються нижче, у розділі JS: SISTER_NAME, SENDER_NAME */
+  /* Фото: покладіть файли поруч із цим html і назвіть їх photo-1.jpg ... photo-12.jpg */
+
+  :root{
+    --plum-dark:#22111f;
+    --plum:#341c33;
+    --plum-mid:#4a2748;
+    --plum-light:#6b3763;
+    --gold:#d9a857;
+    --gold-light:#f3d59b;
+    --gold-dim:#9c7a45;
+    --cream:#fff8f0;
+    --paper:#fbf1e4;
+    --paper-shadow:#e8d9c3;
+    --pink:#f6c9db;
+    --pink-deep:#ec9dbf;
+    --blush:#f2b6cd;
+    --lava1:#ff5a1f;
+    --lava2:#ff9a2e;
+    --lava3:#ffd166;
+    --lava4:#c81d38;
+    --ink:#3a2540;
+    --mint:#8fd9c4;
+    --sky:#93c5eb;
+    --lilac:#c6a8ea;
+    --coral:#ff9e78;
+    --sun:#ffd25c;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0; padding:0; width:100%; height:100%;
+    background:
+      radial-gradient(ellipse 120% 80% at 50% -10%, var(--plum-light) 0%, transparent 60%),
+      radial-gradient(ellipse 100% 60% at 50% 110%, var(--plum-mid) 0%, transparent 55%),
+      linear-gradient(180deg, var(--plum-dark), #180a16 100%);
+    font-family:'Quicksand', sans-serif;
+    color:var(--cream);
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  #stage{
+    position:relative;
+    width:100%; height:100vh; height:100dvh;
+    display:flex; align-items:center; justify-content:center;
+    perspective:1800px;
+  }
+
+  /* --------- ambient sparkles --------- */
+  .sparkle-field{ position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+  .sparkle{
+    position:absolute; border-radius:50%;
+    background:radial-gradient(circle, rgba(255,235,200,0.95) 0%, rgba(255,235,200,0) 70%);
+    opacity:0; animation:sparkleFloat linear infinite;
+  }
+  @keyframes sparkleFloat{
+    0%{ transform:translateY(20px) scale(0.4); opacity:0; }
+    10%{ opacity:.9; }
+    50%{ opacity:.5; }
+    90%{ opacity:0; }
+    100%{ transform:translateY(-140px) scale(1); opacity:0; }
+  }
+
+  /* ================= BOOK ================= */
+  #book-wrap{
+    position:relative;
+    width:min(92vw, 480px);
+    height:min(78vh, 680px);
+    transform-style:preserve-3d;
+  }
+
+  .card-face{
+    position:absolute; inset:0;
+    border-radius:14px;
+    box-shadow:
+      0 30px 60px -15px rgba(0,0,0,.65),
+      0 10px 25px -8px rgba(0,0,0,.5);
+    overflow:hidden;
+    backface-visibility:hidden;
+  }
+
+  /* ---------- COVER ---------- */
+  #cover{
+    background:
+      radial-gradient(ellipse at 50% 20%, var(--plum-light) 0%, transparent 55%),
+      linear-gradient(155deg, var(--plum-mid) 0%, var(--plum-dark) 65%, #170a15 100%);
+    border:1px solid rgba(217,168,87,.35);
+    display:flex; flex-direction:column; align-items:center; justify-content:space-between;
+    padding:34px 22px 40px;
+    transition:opacity .9s ease, transform .9s ease;
+    z-index:5;
+  }
+  #cover::before{
+    content:"";
+    position:absolute; inset:10px;
+    border:1px solid rgba(217,168,87,.5);
+    border-radius:8px;
+    pointer-events:none;
+  }
+  #cover::after{
+    content:"";
+    position:absolute; inset:16px;
+    border:1px solid rgba(217,168,87,.22);
+    border-radius:6px;
+    pointer-events:none;
+  }
+  #cover.leaving{ opacity:0; transform:scale(1.04); pointer-events:none; }
+
+  .cover-eyebrow{
+    font-family:'Fraunces', serif; font-style:italic; font-weight:500;
+    font-size:15px; letter-spacing:.04em; color:var(--gold-light);
+    margin-top:10px; opacity:.9;
+  }
+  .cover-title{
+    font-family:'Fraunces', serif; font-weight:600;
+    font-size:clamp(30px, 8vw, 42px);
+    line-height:1.08;
+    text-align:center;
+    color:var(--cream);
+    text-shadow:0 2px 18px rgba(217,168,87,.25);
+    margin:10px 0 4px;
+  }
+  .cover-name{
+    font-family:'Fraunces', serif; font-style:italic; font-weight:500;
+    font-size:clamp(20px, 5.6vw, 26px);
+    color:var(--gold-light);
+  }
+  .cover-sub{
+    font-size:14px; color:rgba(255,248,240,.65); letter-spacing:.02em;
+    margin-top:6px; text-align:center; max-width:280px;
+  }
+
+  .bouquet-slot{ position:absolute; pointer-events:none; }
+  .bq1{ top:-6px; left:-14px; width:150px; }
+  .bq2{ top:-10px; right:-18px; width:130px; transform:scaleX(-1) rotate(4deg); }
+  .bq3{ bottom:-14px; left:-10px; width:130px; transform:rotate(-6deg); }
+  .bq4{ bottom:-18px; right:-16px; width:150px; transform:scaleX(-1) rotate(-4deg); }
+
+  /* ---------- OPEN BUTTON ---------- */
+  .glow-btn{
+    position:relative;
+    border:none; cursor:pointer;
+    font-family:'Quicksand', sans-serif; font-weight:700; font-size:16px;
+    letter-spacing:.03em;
+    color:var(--plum-dark);
+    padding:16px 34px;
+    border-radius:999px;
+    background:linear-gradient(155deg, var(--gold-light), var(--gold) 60%, var(--gold-dim));
+    box-shadow:
+      0 10px 24px -6px rgba(217,168,87,.55),
+      inset 0 1px 0 rgba(255,255,255,.6);
+    animation:btnPulse 3.2s ease-in-out infinite;
+    z-index:2;
+  }
+  @keyframes btnPulse{
+    0%,100%{ box-shadow:0 10px 24px -6px rgba(217,168,87,.5), inset 0 1px 0 rgba(255,255,255,.6); transform:translateY(0); }
+    50%{ box-shadow:0 14px 32px -6px rgba(217,168,87,.85), inset 0 1px 0 rgba(255,255,255,.7); transform:translateY(-2px); }
+  }
+  .glow-btn.cracking{ animation:none; }
+  .glow-btn.hidden-btn{ visibility:hidden; }
+
+  .nav-btn{
+    border:none; cursor:pointer;
+    width:52px; height:52px; border-radius:50%;
+    background:linear-gradient(155deg, var(--gold-light), var(--gold) 60%, var(--gold-dim));
+    box-shadow:0 8px 18px -4px rgba(217,168,87,.5), inset 0 1px 0 rgba(255,255,255,.55);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--plum-dark); font-size:20px;
+    transition:transform .15s ease;
+  }
+  .nav-btn:active{ transform:scale(.9); }
+  .nav-btn:disabled{ opacity:.3; cursor:default; }
+  .nav-btn:disabled:active{ transform:none; }
+
+  /* ---------- SHATTER PARTICLES ---------- */
+  .shard{
+    position:fixed; top:0; left:0;
+    width:14px; height:14px;
+    pointer-events:none;
+    background:linear-gradient(135deg, var(--lava3), var(--lava2) 45%, var(--lava1) 75%, var(--lava4));
+    box-shadow:0 0 10px 1px rgba(255,138,46,.65);
+    z-index:9999;
+    will-change:transform, opacity;
+  }
+  .flash-ring{
+    position:fixed; border-radius:50%; pointer-events:none; z-index:9998;
+    background:radial-gradient(circle, rgba(255,209,102,.9) 0%, rgba(255,90,31,.55) 35%, rgba(200,29,56,0) 70%);
+    transform:translate(-50%,-50%) scale(0);
+    animation:flashOut 1.6s cubic-bezier(.2,.7,.3,1) forwards;
+  }
+  @keyframes flashOut{
+    0%{ transform:translate(-50%,-50%) scale(0); opacity:1; }
+    60%{ opacity:.55; }
+    100%{ transform:translate(-50%,-50%) scale(7); opacity:0; }
+  }
+
+  /* ---------- BOOK PAGES ---------- */
+  #pages-wrap{
+    position:absolute; inset:0;
+    opacity:0; transform:scale(.96);
+    pointer-events:none;
+    transition:opacity .8s ease .15s, transform .8s ease .15s;
+    z-index:4;
+  }
+  #pages-wrap.active{ opacity:1; transform:scale(1); pointer-events:auto; }
+
+  #page-stage{
+    position:absolute; inset:0 0 78px 0;
+    transform-style:preserve-3d;
+  }
+
+  .page{
+    position:absolute; inset:0;
+    background:
+      radial-gradient(circle at 8% 6%, rgba(255,255,255,.5) 0%, transparent 3%),
+      radial-gradient(circle at 92% 90%, rgba(0,0,0,.04) 0%, transparent 4%),
+      linear-gradient(155deg, #fffaf2 0%, var(--paper) 55%, #f3e5cf 100%);
+    border-radius:14px;
+    border:1px solid rgba(217,168,87,.4);
+    box-shadow:inset 0 0 40px rgba(155,110,60,.08);
+    backface-visibility:hidden;
+    transform-origin:left center;
+    display:flex; flex-direction:column; align-items:center;
+    padding:26px 20px 18px;
+    color:var(--ink);
+  }
+  .page::before{
+    content:"";
+    position:absolute; left:0; top:0; bottom:0; width:34px;
+    background:linear-gradient(90deg, rgba(120,70,60,.16), rgba(120,70,60,0));
+    border-radius:14px 0 0 14px;
+    pointer-events:none;
+  }
+  .page.turning{
+    animation:turnPage 1.05s cubic-bezier(.55,.06,.4,.98) forwards;
+    z-index:6;
+  }
+  @keyframes turnPage{
+    0%{ transform:rotateY(0deg); }
+    100%{ transform:rotateY(-172deg); }
+  }
+  .page.turning-back{
+    animation:turnPageBack 1.05s cubic-bezier(.55,.06,.4,.98) forwards;
+    z-index:6;
+  }
+  @keyframes turnPageBack{
+    0%{ transform:rotateY(0deg); }
+    100%{ transform:rotateY(172deg); }
+  }
+  .page.below{ z-index:1; }
+
+  .page-num{
+    position:absolute; bottom:10px; right:18px;
+    font-family:'Fraunces', serif; font-style:italic; font-size:12px;
+    color:var(--gold-dim); opacity:.75;
+  }
+
+  .photo-frame{
+    position:relative; z-index:5;
+    width:100%; max-width:260px; aspect-ratio:4/3;
+    border-radius:8px;
+    margin-top:6px;
+    background-size:cover; background-position:center;
+    background-color:#eadfca;
+    border:6px solid #fffdf8;
+    box-shadow:
+      0 8px 18px -6px rgba(60,30,20,.35),
+      0 0 0 1px rgba(217,168,87,.5);
+    position:relative;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .photo-frame .ph-fallback{
+    color:#c9ad84; font-size:11px; text-align:center; padding:6px;
+    font-family:'Quicksand',sans-serif; letter-spacing:.03em;
+  }
+
+  .page-greeting{
+    position:relative; z-index:5;
+    font-family:'Fraunces', serif; font-weight:500; font-style:italic;
+    font-size:clamp(14px, 4vw, 16.5px);
+    line-height:1.55;
+    text-align:center;
+    color:var(--ink);
+    margin-top:16px;
+    padding:0 6px;
+    max-width:320px;
+  }
+  .page-title-small{
+    position:relative; z-index:5;
+    font-family:'Fraunces',serif; font-weight:600; font-size:13px;
+    letter-spacing:.08em; color:var(--gold-dim); margin-top:2px;
+  }
+
+  .page .bq-corner{ position:absolute; pointer-events:none; opacity:.95; }
+
+  /* ---------- animated critters ---------- */
+  .critter-track{
+    position:absolute; left:0; width:100%; height:52px;
+    pointer-events:none; z-index:3;
+  }
+  .critter-inner{
+    position:absolute; width:46px;
+    animation-name:walkAcross; animation-timing-function:ease-in-out;
+    animation-iteration-count:infinite;
+  }
+  @keyframes walkAcross{
+    0%{   left:1%;  transform:scaleX(1);  }
+    46%{  left:70%; transform:scaleX(1);  }
+    50%{  left:70%; transform:scaleX(-1); }
+    96%{  left:1%;  transform:scaleX(-1); }
+    100%{ left:1%;  transform:scaleX(1);  }
+  }
+  .critter-bob{ animation:critterBob .6s ease-in-out infinite alternate; }
+  @keyframes critterBob{
+    0%{ transform:translateY(0) rotate(-4deg); }
+    100%{ transform:translateY(-6px) rotate(4deg); }
+  }
+  .critter-bob.fly{ animation:critterFly 1.7s ease-in-out infinite; }
+  @keyframes critterFly{
+    0%,100%{ transform:translateY(0) rotate(-3deg); }
+    50%{ transform:translateY(-11px) rotate(3deg); }
+  }
+  .critter-bob.flutter{ animation:butterflyFlutter 1.6s ease-in-out infinite; }
+  @keyframes butterflyFlutter{
+    0%{  transform:translateY(0) scaleX(1) rotate(-2deg); }
+    12%{ transform:translateY(-2px) scaleX(.68) rotate(0deg); }
+    24%{ transform:translateY(-5px) scaleX(1) rotate(2deg); }
+    36%{ transform:translateY(-2px) scaleX(.68) rotate(0deg); }
+    50%{ transform:translateY(-9px) scaleX(1) rotate(-2deg); }
+    62%{ transform:translateY(-4px) scaleX(.68) rotate(0deg); }
+    74%{ transform:translateY(-9px) scaleX(1) rotate(2deg); }
+    86%{ transform:translateY(-4px) scaleX(.68) rotate(0deg); }
+    100%{ transform:translateY(0) scaleX(1) rotate(-2deg); }
+  }
+
+  /* ---------- balloons ---------- */
+  .balloon{
+    position:absolute; width:30px; pointer-events:none; z-index:1;
+    animation:balloonRise linear infinite;
+  }
+  .balloon svg{ width:100%; height:auto; display:block; filter:drop-shadow(0 6px 8px rgba(60,30,20,.22)); }
+  @keyframes balloonRise{
+    0%{   transform:translate(0,0) rotate(-3deg);   opacity:0; }
+    8%{   opacity:.92; }
+    50%{  transform:translate(10px,-70px) rotate(3deg); }
+    92%{  opacity:.85; }
+    100%{ transform:translate(-6px,-150px) rotate(-3deg); opacity:0; }
+  }
+
+  /* ---------- garland ---------- */
+  .garland{
+    position:relative; width:88%; height:26px; margin:0 auto -2px;
+    display:flex; align-items:flex-start; justify-content:space-between;
+    animation:garlandSway 4.5s ease-in-out infinite; transform-origin:top center;
+    z-index:2;
+  }
+  .garland::before{
+    content:""; position:absolute; top:2px; left:0; right:0; height:1px;
+    background:rgba(217,168,87,.55);
+  }
+  .garland .flag{
+    width:13px; height:17px; margin-top:2px;
+    clip-path:polygon(0 0, 100% 0, 50% 100%);
+    box-shadow:0 2px 3px rgba(0,0,0,.15);
+  }
+  @keyframes garlandSway{
+    0%,100%{ transform:rotate(-1.4deg); }
+    50%{ transform:rotate(1.4deg); }
+  }
+
+  /* ---------- confetti ---------- */
+  .confetti-piece{
+    position:absolute; pointer-events:none; z-index:1;
+    animation-name:confettiDrift; animation-timing-function:ease-in-out; animation-iteration-count:infinite;
+  }
+  @keyframes confettiDrift{
+    0%{   transform:translateY(0) rotate(0deg);    opacity:0; }
+    12%{  opacity:.85; }
+    88%{  opacity:.6; }
+    100%{ transform:translateY(-70px) rotate(200deg); opacity:0; }
+  }
+  .critter-svg{
+    width:46px; height:46px; display:block;
+    filter:drop-shadow(0 5px 6px rgba(60,30,20,.28));
+  }
+
+  /* ---------- tiny twinkling decor ---------- */
+  .deco-twinkle{
+    position:absolute; width:15px; height:15px;
+    opacity:.7; pointer-events:none; z-index:2;
+    animation:twinkle 2.6s ease-in-out infinite;
+  }
+  @keyframes twinkle{
+    0%,100%{ transform:scale(.75) rotate(0deg); opacity:.45; }
+    50%{ transform:scale(1.15) rotate(10deg); opacity:1; }
+  }
+
+  /* ---------- corner ornament marks ---------- */
+  .corner-mark{ position:absolute; width:20px; height:20px; opacity:.55; pointer-events:none; z-index:2; }
+  .corner-mark.tr{ top:10px; right:10px; border-top:2px solid var(--gold); border-right:2px solid var(--gold); border-radius:0 6px 0 0; }
+  .corner-mark.bl{ bottom:10px; left:10px; border-bottom:2px solid var(--gold); border-left:2px solid var(--gold); border-radius:0 0 0 6px; }
+
+  /* controls */
+  #controls{
+    position:absolute; left:0; right:0; bottom:14px;
+    display:flex; align-items:center; justify-content:center; gap:22px;
+    z-index:7;
+  }
+  #dots{ display:flex; gap:6px; }
+  .dot{ width:6px; height:6px; border-radius:50%; background:rgba(217,168,87,.35); transition:background .3s, transform .3s; }
+  .dot.on{ background:var(--gold-light); transform:scale(1.3); }
+
+  @media (max-width:420px){
+    #book-wrap{ width:94vw; height:80vh; }
+  }
+</style>
+</head>
+<body>
+
+<div id="stage">
+  <div class="sparkle-field" id="sparkleField"><div class="sparkle" style="width: 2.31367px; height: 2.31367px; left: 68.9504%; top: 65.4086%; animation-duration: 10.0607s; animation-delay: 1.03252s;"></div><div class="sparkle" style="width: 2.58571px; height: 2.58571px; left: 50.6209%; top: 64.9691%; animation-duration: 8.09908s; animation-delay: 6.28792s;"></div><div class="sparkle" style="width: 2.38104px; height: 2.38104px; left: 41.9637%; top: 76.5989%; animation-duration: 11.9161s; animation-delay: 7.52293s;"></div><div class="sparkle" style="width: 3.56926px; height: 3.56926px; left: 85.1482%; top: 95.8194%; animation-duration: 12.6712s; animation-delay: 4.91499s;"></div><div class="sparkle" style="width: 2.97206px; height: 2.97206px; left: 23.1163%; top: 76.0782%; animation-duration: 8.94528s; animation-delay: 2.43345s;"></div><div class="sparkle" style="width: 4.02448px; height: 4.02448px; left: 61.0989%; top: 80.4001%; animation-duration: 13.4225s; animation-delay: 3.17265s;"></div><div class="sparkle" style="width: 4.71285px; height: 4.71285px; left: 38.7557%; top: 66.3039%; animation-duration: 8.57525s; animation-delay: 7.81107s;"></div><div class="sparkle" style="width: 2.7717px; height: 2.7717px; left: 62.0481%; top: 84.2576%; animation-duration: 7.23288s; animation-delay: 4.13866s;"></div><div class="sparkle" style="width: 3.74788px; height: 3.74788px; left: 65.7739%; top: 61.7156%; animation-duration: 9.6894s; animation-delay: 6.03965s;"></div><div class="sparkle" style="width: 3.65009px; height: 3.65009px; left: 17.4343%; top: 95.6117%; animation-duration: 9.51213s; animation-delay: 5.3484s;"></div><div class="sparkle" style="width: 2.66359px; height: 2.66359px; left: 16.4462%; top: 93.5377%; animation-duration: 13.1736s; animation-delay: 0.736591s;"></div><div class="sparkle" style="width: 4.24999px; height: 4.24999px; left: 45.5206%; top: 67.783%; animation-duration: 10.5581s; animation-delay: 2.71007s;"></div><div class="sparkle" style="width: 4.14731px; height: 4.14731px; left: 87.785%; top: 78.4066%; animation-duration: 8.40751s; animation-delay: 6.57013s;"></div><div class="sparkle" style="width: 2.5068px; height: 2.5068px; left: 49.3949%; top: 88.4491%; animation-duration: 6.54922s; animation-delay: 5.96061s;"></div><div class="sparkle" style="width: 2.5856px; height: 2.5856px; left: 98.9163%; top: 81.2282%; animation-duration: 13.1452s; animation-delay: 5.67247s;"></div><div class="sparkle" style="width: 3.02563px; height: 3.02563px; left: 54.7945%; top: 77.8166%; animation-duration: 6.45867s; animation-delay: 6.30086s;"></div><div class="sparkle" style="width: 4.26127px; height: 4.26127px; left: 32.4447%; top: 62.4946%; animation-duration: 6.63469s; animation-delay: 5.57733s;"></div><div class="sparkle" style="width: 3.62027px; height: 3.62027px; left: 40.973%; top: 69.1422%; animation-duration: 8.60626s; animation-delay: 0.497286s;"></div><div class="sparkle" style="width: 2.16369px; height: 2.16369px; left: 32.2384%; top: 61.7079%; animation-duration: 12.3009s; animation-delay: 5.72076s;"></div><div class="sparkle" style="width: 3.57894px; height: 3.57894px; left: 49.4607%; top: 65.7742%; animation-duration: 13.8585s; animation-delay: 6.3892s;"></div><div class="sparkle" style="width: 4.33988px; height: 4.33988px; left: 32.9175%; top: 94.2066%; animation-duration: 7.27692s; animation-delay: 6.16144s;"></div><div class="sparkle" style="width: 4.91526px; height: 4.91526px; left: 97.8656%; top: 80.1376%; animation-duration: 13.627s; animation-delay: 4.74674s;"></div><div class="sparkle" style="width: 3.73001px; height: 3.73001px; left: 1.70089%; top: 79.7205%; animation-duration: 10.2386s; animation-delay: 7.70829s;"></div><div class="sparkle" style="width: 4.92348px; height: 4.92348px; left: 11.4397%; top: 90.126%; animation-duration: 9.40664s; animation-delay: 0.271679s;"></div><div class="sparkle" style="width: 2.75672px; height: 2.75672px; left: 47.8655%; top: 92.1433%; animation-duration: 10.2941s; animation-delay: 7.68895s;"></div><div class="sparkle" style="width: 2.65455px; height: 2.65455px; left: 21.8429%; top: 88.7758%; animation-duration: 7.36946s; animation-delay: 2.92749s;"></div></div>
+
+  <div id="book-wrap">
+
+    <!-- ===== COVER ===== -->
+    <div class="card-face" id="cover">
+      <svg class="bouquet-slot bq1" viewBox="0 0 140 150"><use href="#zephyrBouquet"></use></svg>
+      <svg class="bouquet-slot bq2" viewBox="0 0 140 150" style="filter:hue-rotate(-12deg)"><use href="#zephyrBouquet"></use></svg>
+
+      <div class="cover-eyebrow">вітаємо з</div>
+      <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+        <div class="cover-title">Днем<br>Народження</div>
+        <div class="cover-name" id="coverName">Сестричко</div>
+        <div class="cover-sub">Рідна наша ,Дорога !Наша гордість,радість і світле сонечко! Сьогодні від усієї нашої родини ми вітаємо тебе з Днюшкою ! Ми безмежно щасливі,що ти в нас є, така розумна, добра,красива і щира !<br>НАТИСНИ, ЩОБ ВІДКРИТИ</div>
+      </div>
+
+      <button class="glow-btn" id="openBtn">Відкрити привітання</button>
+
+      <div class="critter-track" style="bottom:18px;">
+        <div class="critter-inner" style="animation-duration:9.5s;">
+          <div class="critter-bob">
+            <svg class="critter-svg" viewBox="0 0 100 100"><use href="#critterBunny"></use></svg>
+          </div>
+        </div>
+      </div>
+
+      <svg class="bouquet-slot bq3" viewBox="0 0 140 150" style="filter:hue-rotate(8deg)"><use href="#zephyrBouquet"></use></svg>
+      <svg class="bouquet-slot bq4" viewBox="0 0 140 150"><use href="#zephyrBouquet"></use></svg>
+    
+    <div class="confetti-piece" style="left:0%; top:15%; width:4px; height:4px; background:var(--pink); border-radius:50%; animation-duration:3.5s; animation-delay:0s;"></div><div class="confetti-piece" style="left:11%; top:24%; width:6px; height:6px; background:var(--mint); border-radius:2px; animation-duration:4.6s; animation-delay:0.4s;"></div><div class="confetti-piece" style="left:22%; top:33%; width:8px; height:8px; background:var(--lilac); border-radius:0; animation-duration:5.7s; animation-delay:0.8s;"></div><div class="confetti-piece" style="left:33%; top:42%; width:4px; height:4px; background:var(--sun); border-radius:50%; animation-duration:6.800000000000001s; animation-delay:1.2000000000000002s;"></div><div class="confetti-piece" style="left:44%; top:51%; width:6px; height:6px; background:var(--gold); border-radius:2px; animation-duration:3.5s; animation-delay:1.6s;"></div><div class="confetti-piece" style="left:55%; top:60%; width:8px; height:8px; background:var(--sky); border-radius:0; animation-duration:4.6s; animation-delay:2s;"></div><div class="confetti-piece" style="left:66%; top:69%; width:4px; height:4px; background:var(--coral); border-radius:50%; animation-duration:5.7s; animation-delay:2.4000000000000004s;"></div><div class="confetti-piece" style="left:77%; top:78%; width:6px; height:6px; background:var(--pink); border-radius:2px; animation-duration:6.800000000000001s; animation-delay:2.8000000000000003s;"></div><div class="confetti-piece" style="left:88%; top:17%; width:8px; height:8px; background:var(--mint); border-radius:0; animation-duration:3.5s; animation-delay:0.20000000000000018s;"></div>
+    <svg class="deco-twinkle" viewBox="0 0 20 20" style="top:6%; left:8%; animation-delay:0s; filter:hue-rotate(-20deg);"><use href="#tinyStar"></use></svg><svg class="deco-twinkle" viewBox="0 0 20 20" style="top:12%; left:80%; animation-delay:0.7s; filter:hue-rotate(27deg);"><use href="#tinyHeart"></use></svg><svg class="deco-twinkle" viewBox="0 0 20 20" style="top:48%; left:89%; animation-delay:1.4s; filter:hue-rotate(14deg);"><use href="#tinyStar"></use></svg><svg class="deco-twinkle" viewBox="0 0 20 20" style="top:58%; left:6%; animation-delay:2.0999999999999996s; filter:hue-rotate(1deg);"><use href="#tinyHeart"></use></svg><svg class="deco-twinkle" viewBox="0 0 20 20" style="top:80%; left:78%; animation-delay:0.19999999999999973s; filter:hue-rotate(-12deg);"><use href="#tinyStar"></use></svg>
+    <div class="balloon" style="left:10%; bottom:60px; animation-duration:6s; animation-delay:0s;">
+      <svg viewBox="0 0 60 90"><use href="#balloonShape" fill="var(--pink)"></use></svg>
+    </div><div class="balloon" style="left:84%; bottom:60px; animation-duration:7.1s; animation-delay:1.4s;">
+      <svg viewBox="0 0 60 90"><use href="#balloonShape" fill="var(--sky)"></use></svg>
+    </div>
+    <div style="position:absolute; top:14px; left:0; right:0;"><div class="garland"><div class="flag" style="background:var(--pink)"></div><div class="flag" style="background:var(--gold)"></div><div class="flag" style="background:var(--mint)"></div><div class="flag" style="background:var(--sky)"></div><div class="flag" style="background:var(--lilac)"></div><div class="flag" style="background:var(--coral)"></div><div class="flag" style="background:var(--sun)"></div><div class="flag" style="background:var(--pink)"></div><div class="flag" style="background:var(--gold)"></div></div></div>
+    <div class="critter-track" style="top:44px;">
+      <div class="critter-inner" style="animation-duration:11s; animation-delay:.6s;">
+        <div class="critter-bob flutter">
+          <svg class="critter-svg" style="width:36px;height:36px;" viewBox="0 0 100 100"><use href="#critterButterfly"></use></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <!-- ===== PAGES ===== -->
+    <div id="pages-wrap">
+      <div id="page-stage"><div class="page">
+    <svg class="bq-corner" viewBox="0 0 140 150" style="width:70px; top:-18px; left:-18px; filter:hue-rotate(-10deg)"><use href="#zephyrBouquet"></use></svg>
+    <div class="corner-mark tr"></div>
+    <div class="corner-mark bl"></div>
+    <div class="confetti-piece" style="left:0%; top:15%; width:4px; height:4px; background:var(--pink); border-radius:50%; animation-duration:3.5s; animation-delay:0s;"></div><div class="confetti-piece" style="left:11%; top:24%; width:6px; height:6px; background:var(--mint); border-radius:2px; animation-duration:4.6s; animation-delay:0.4s;"></div><div class="confetti-piece" style="left:22%; top:33%; width:8px; height:8px; background:var(--lilac); border-radius:0; animation-duration:5.7s; animation-delay:0.8s;"></div><div class="confetti-piece" style="left:33%; top:42%; width:4px; height:4px; background:var(--sun); border-radius:50%; animation-duration:6.800000000000001s; animation-delay:1.2000000000000002s;"></div><div class="confetti-piece" style="left:44%; top:51%; width:6px; height:6px; background:var(--gold); border-radius:2px; animation-duration:3.5s; animation-delay:1.6s;"></div><div class="confetti-piece" style="left:55%; top:60%; width:8px; height:8px; background:var(--sky); border-radius:0; animation-duration:4.6s; animation-delay:2s;"></div><div class="confetti-piece" style="left:66%; top:69%; width:4px; height:4px; background:var(--coral); border-radius:50%; animation-duration:5.7s; animation-delay:2.4000000000000004s;"></div><div class="confetti-piece" style="left:77%; top:78%; width:6px; height:6px; background:var(--pink); border-radius:2px; animation-duration:6.800000000000001s; animation-delay:2.8000000000000003s;"></div><div class="confetti-piece" style="left:88%; top:17%; width:8px; height:8px; background:var(--mint); border-radius:0; animation-duration:3.5s; animation-delay:0.20000000000000018s;"></div>
+    <svg class="deco-twinkle" viewBox="0 0 20 20" style="top:6%; left:8%; animation-delay:0s; filter:hue-rotate(-20deg);"><use href="#tinyStar"></use></svg><svg class="deco-twinkle" viewBox="0 0 20 20" style="top:12%; left:80%; animation-delay:0.7s; filter:hue-rotate(27deg);"><use href="#tinyHeart"></use></svg><svg class="deco-twinkle" viewBox="0 0 20 20" style="top:48%; left:89%; animation-delay:1.4s; filter:hue-rotate(14deg);"><use href="#tinyStar"></use></svg><svg class="deco-twinkle" viewBox="0 0 20 20" style="top:58%; left:6%; animation-delay:2.0999999999999996s; filter:hue-rotate(1deg);"><use href="#tinyHeart"></use></svg><svg class="deco-twinkle" viewBox="0 0 20 20" style="top:80%; left:78%; animation-delay:0.19999999999999973s; filter:hue-rotate(-12deg);"><use href="#tinyStar"></use></svg>
+    <div class="balloon" style="left:10%; bottom:60px; animation-duration:6s; animation-delay:0s;">
+      <svg viewBox="0 0 60 90"><use href="#balloonShape" fill="var(--pink)"></use></svg>
+    </div><div class="balloon" style="left:84%; bottom:60px; animation-duration:7.1s; animation-delay:1.4s;">
+      <svg viewBox="0 0 60 90"><use href="#balloonShape" fill="var(--sky)"></use></svg>
+    </div>
+    <div class="garland"><div class="flag" style="background:var(--pink)"></div><div class="flag" style="background:var(--gold)"></div><div class="flag" style="background:var(--mint)"></div><div class="flag" style="background:var(--sky)"></div><div class="flag" style="background:var(--lilac)"></div><div class="flag" style="background:var(--coral)"></div><div class="flag" style="background:var(--sun)"></div><div class="flag" style="background:var(--pink)"></div><div class="flag" style="background:var(--gold)"></div></div>
+    <div class="page-title-small">01 / 12</div>
+    <div class="photo-frame" style="background-image:url('photo-1.jpg')">
+    </div>
+    <div class="page-greeting">Найдорожча моя сестричко, сьогодні особливий день — день, коли на світ прийшла людина, що вміє робити звичайні дні святковими просто своєю присутністю.</div>
+    
+      <div class="critter-track" style="bottom:8px;">
+        <div class="critter-inner" style="animation-duration:7s; animation-delay:0s;">
+          <div class="critter-bob " style="opacity:1;">
+            <svg class="critter-svg" style="width:46px; height:46px;" viewBox="0 0 100 100"><use href="#critterBunny"></use></svg>
+          </div>
+        </div>
+      </div>
+      <div class="critter-track" style="bottom:40px;">
+        <div class="critter-inner" style="animation-duration:8.3s; animation-delay:0.8s;">
+          <div class="critter-bob " style="opacity:0.82;">
+            <svg class="critter-svg" style="width:34px; height:34px;" viewBox="0 0 100 100"><use href="#critterCat"></use></svg>
+          </div>
+        </div>
+      </div>
+      <div class="critter-track" style="top:8px;">
+        <div class="critter-inner" style="animation-duration:9.6s; animation-delay:1.6s;">
+          <div class="critter-bob fly" style="opacity:1;">
+            <svg class="critter-svg" style="width:46px; height:46px;" viewBox="0 0 100 100"><use href="#critterBird"></use></svg>
+          </div>
+        </div>
+      </div>
+    <svg class="bq-corner" viewBox="0 0 140 150" style="width:70px; bottom:-18px; right:-18px; transform:scaleX(-1); filter:hue-rotate(0deg)"><use href="#zephyrBouquet"></use></svg>
+    <div class="page-num">1</div>
+  </div></div>
+      <div id="controls">
+        <button class="nav-btn" id="prevBtn" aria-label="Назад" disabled="">‹</button>
+        <div id="dots"><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <button class="nav-btn" id="nextBtn" aria-label="Далі">›</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== SVG SPRITE: zephyr bouquet ===== -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <radialgradient id="zPink" cx="35%" cy="25%" r="80%">
+      <stop offset="0%" stop-color="#fff6fa"></stop>
+      <stop offset="35%" stop-color="#f9d3e3"></stop>
+      <stop offset="75%" stop-color="#ec9dbf"></stop>
+      <stop offset="100%" stop-color="#d97ba3"></stop>
+    </radialgradient>
+    <radialgradient id="zCream" cx="35%" cy="25%" r="80%">
+      <stop offset="0%" stop-color="#ffffff"></stop>
+      <stop offset="40%" stop-color="#fff3e4"></stop>
+      <stop offset="80%" stop-color="#f3dcb8"></stop>
+      <stop offset="100%" stop-color="#e2c093"></stop>
+    </radialgradient>
+    <lineargradient id="zStick" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e7c98f"></stop>
+      <stop offset="100%" stop-color="#c9a865"></stop>
+    </lineargradient>
+    <lineargradient id="zRibbon" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f3d59b"></stop>
+      <stop offset="100%" stop-color="#c98a3a"></stop>
+    </lineargradient>
+    <filter id="zSoft" x="-40%" y="-40%" width="180%" height="180%">
+      <fedropshadow dx="0" dy="2" stdDeviation="2.2" flood-color="#5a2f3a" flood-opacity="0.28"></fedropshadow>
+    </filter>
+
+    <g id="zephyrCandy">
+      <!-- paper cup -->
+      <path d="M -11 2 L 11 2 L 8 16 Q 0 20 -8 16 Z" fill="url(#zRibbon)" opacity=".9"></path>
+      <path d="M -11 2 L 11 2 L 9.5 5 L -9.5 5 Z" fill="#fff3d8" opacity=".55"></path>
+      <!-- dome -->
+      <path class="candy-dome" d="M -12 3
+               C -13 -14, -9 -30, -1 -34
+               C 4 -37, 7 -30, 4 -25
+               C 10 -27, 13 -17, 10 -8
+               C 13 -3, 12 3, 8 4
+               Z"></path>
+      <!-- swirl lines -->
+      <path d="M -8 -4 C -4 -12, 2 -14, 4 -22" fill="none" stroke="#ffffff" stroke-opacity=".55" stroke-width="1.4" stroke-linecap="round"></path>
+      <path d="M -6 -14 C -2 -18, 3 -20, 2 -28" fill="none" stroke="#ffffff" stroke-opacity=".4" stroke-width="1.1" stroke-linecap="round"></path>
+      <!-- gloss -->
+      <ellipse cx="-4" cy="-22" rx="3.4" ry="6" fill="#ffffff" opacity=".55"></ellipse>
+    </g>
+  </defs>
+
+  <symbol id="zephyrBouquet" viewBox="0 0 140 150">
+    <g filter="url(#zSoft)">
+      <line x1="70" y1="150" x2="52" y2="70" stroke="url(#zStick)" stroke-width="3" stroke-linecap="round"></line>
+      <line x1="70" y1="150" x2="70" y2="60" stroke="url(#zStick)" stroke-width="3" stroke-linecap="round"></line>
+      <line x1="70" y1="150" x2="88" y2="70" stroke="url(#zStick)" stroke-width="3" stroke-linecap="round"></line>
+      <line x1="70" y1="150" x2="36" y2="90" stroke="url(#zStick)" stroke-width="3" stroke-linecap="round"></line>
+      <line x1="70" y1="150" x2="104" y2="90" stroke="url(#zStick)" stroke-width="3" stroke-linecap="round"></line>
+
+      <g transform="translate(36,90) rotate(-8)"><use href="#zephyrCandy" fill="url(#zPink)"></use></g>
+      <g transform="translate(52,70) rotate(-4) scale(1.08)"><use href="#zephyrCandy" fill="url(#zCream)"></use></g>
+      <g transform="translate(70,58) scale(1.18)"><use href="#zephyrCandy" fill="url(#zCream)"></use></g>
+      <g transform="translate(88,70) rotate(4) scale(1.08)"><use href="#zephyrCandy" fill="url(#zCream)"></use></g>
+      <g transform="translate(104,90) rotate(8)"><use href="#zephyrCandy" fill="url(#zPink)"></use></g>
+
+      <path d="M 55 148 Q 70 132 85 148 Q 70 140 55 148 Z" fill="url(#zRibbon)"></path>
+      <circle cx="70" cy="145" r="5" fill="url(#zRibbon)"></circle>
+    </g>
+  </symbol>
+
+  <defs>
+    <radialgradient id="critterBody" cx="35%" cy="28%" r="80%">
+      <stop offset="0%" stop-color="#fffdf9"></stop>
+      <stop offset="55%" stop-color="#fbeee0"></stop>
+      <stop offset="100%" stop-color="#e6c99e"></stop>
+    </radialgradient>
+    <radialgradient id="critterAccent" cx="35%" cy="28%" r="80%">
+      <stop offset="0%" stop-color="#ffe3ee"></stop>
+      <stop offset="100%" stop-color="#e888ae"></stop>
+    </radialgradient>
+  </defs>
+
+  <!-- ============ cute animals ============ -->
+  <symbol id="critterBunny" viewBox="0 0 100 100">
+    <g filter="url(#zSoft)">
+      <path d="M38 34 C 32 10, 40 2, 46 8 C 50 16, 48 30, 44 40 Z" fill="url(#critterBody)"></path>
+      <path d="M40 31 C 37 17, 41 11, 44 14 C 46 20, 45 27, 42 33 Z" fill="url(#critterAccent)"></path>
+      <path d="M62 34 C 68 10, 60 2, 54 8 C 50 16, 52 30, 56 40 Z" fill="url(#critterBody)"></path>
+      <path d="M60 31 C 63 17, 59 11, 56 14 C 54 20, 55 27, 58 33 Z" fill="url(#critterAccent)"></path>
+      <ellipse cx="50" cy="62" rx="27" ry="26" fill="url(#critterBody)"></ellipse>
+      <ellipse cx="36" cy="87" rx="10" ry="7" fill="url(#critterBody)"></ellipse>
+      <ellipse cx="64" cy="87" rx="10" ry="7" fill="url(#critterBody)"></ellipse>
+      <ellipse cx="35" cy="65" rx="4.4" ry="2.8" fill="url(#critterAccent)" opacity=".65"></ellipse>
+      <ellipse cx="65" cy="65" rx="4.4" ry="2.8" fill="url(#critterAccent)" opacity=".65"></ellipse>
+      <circle cx="41" cy="58" r="2.6" fill="#4a2f33"></circle>
+      <circle cx="59" cy="58" r="2.6" fill="#4a2f33"></circle>
+      <circle cx="42.1" cy="56.8" r=".9" fill="#fff"></circle>
+      <circle cx="60.1" cy="56.8" r=".9" fill="#fff"></circle>
+      <path d="M50 62 l-2.2 2 l2.2 1.4 l2.2 -1.4 Z" fill="#e07398"></path>
+      <path d="M47 66 Q50 69.4 53 66" stroke="#4a2f33" stroke-width="1.4" fill="none" stroke-linecap="round"></path>
+      <ellipse cx="41" cy="52" rx="3" ry="4.6" fill="#fff" opacity=".5"></ellipse>
+    </g>
+  </symbol>
+
+  <symbol id="critterCat" viewBox="0 0 100 100">
+    <g filter="url(#zSoft)">
+      <path d="M32 40 L40 15 L48 38 Z" fill="url(#critterBody)"></path>
+      <path d="M68 40 L60 15 L52 38 Z" fill="url(#critterBody)"></path>
+      <path d="M35.5 36 L40 23 L44.5 35 Z" fill="url(#critterAccent)"></path>
+      <path d="M64.5 36 L60 23 L55.5 35 Z" fill="url(#critterAccent)"></path>
+      <ellipse cx="50" cy="60" rx="26" ry="24" fill="url(#critterBody)"></ellipse>
+      <path d="M74 66 C 92 64, 94 84, 78 85 C 85 78, 81 70, 70 70 Z" fill="url(#critterBody)"></path>
+      <ellipse cx="35" cy="63" rx="4" ry="2.4" fill="url(#critterAccent)" opacity=".55"></ellipse>
+      <ellipse cx="65" cy="63" rx="4" ry="2.4" fill="url(#critterAccent)" opacity=".55"></ellipse>
+      <circle cx="41" cy="58" r="2.4" fill="#4a2f33"></circle>
+      <circle cx="59" cy="58" r="2.4" fill="#4a2f33"></circle>
+      <circle cx="42" cy="57" r=".8" fill="#fff"></circle>
+      <circle cx="60" cy="57" r=".8" fill="#fff"></circle>
+      <path d="M50 61.5 l-2 1.8 l2 1.2 l2 -1.2 Z" fill="#e07398"></path>
+      <path d="M46 65.5 Q50 67.6 54 65.5" stroke="#4a2f33" stroke-width="1.2" fill="none" stroke-linecap="round"></path>
+      <line x1="30" y1="60" x2="12" y2="58" stroke="#a3805e" stroke-width="1" stroke-linecap="round"></line>
+      <line x1="30" y1="64" x2="12" y2="66" stroke="#a3805e" stroke-width="1" stroke-linecap="round"></line>
+      <line x1="70" y1="60" x2="88" y2="58" stroke="#a3805e" stroke-width="1" stroke-linecap="round"></line>
+      <line x1="70" y1="64" x2="88" y2="66" stroke="#a3805e" stroke-width="1" stroke-linecap="round"></line>
+      <ellipse cx="41" cy="52" rx="2.8" ry="4.2" fill="#fff" opacity=".45"></ellipse>
+    </g>
+  </symbol>
+
+  <symbol id="critterBird" viewBox="0 0 100 90">
+    <g filter="url(#zSoft)">
+      <path d="M38 48 C 18 42, 10 56, 24 64 C 30 58, 34 52, 38 48 Z" fill="url(#critterBody)"></path>
+      <ellipse cx="52" cy="52" rx="24" ry="20" fill="url(#critterAccent)"></ellipse>
+      <circle cx="70" cy="42" r="11" fill="url(#critterAccent)"></circle>
+      <path d="M79 42 L90 40 L79 47 Z" fill="#e8a856"></path>
+      <circle cx="73.4" cy="38.6" r="1.9" fill="#4a2f33"></circle>
+      <circle cx="74.1" cy="37.9" r=".6" fill="#fff"></circle>
+      <path d="M50 68 C 46 76, 57 78, 61 70" fill="none" stroke="url(#critterAccent)" stroke-width="6" stroke-linecap="round"></path>
+      <ellipse cx="46" cy="46" rx="3" ry="4.4" fill="#fff" opacity=".4"></ellipse>
+    </g>
+  </symbol>
+
+  <!-- ============ tiny twinkles ============ -->
+  <symbol id="tinyStar" viewBox="0 0 20 20">
+    <path d="M10 0 L12.3 7.6 L20 8 L13.7 12.6 L15.9 20 L10 15.3 L4.1 20 L6.3 12.6 L0 8 L7.7 7.6 Z" fill="url(#zCream)"></path>
+  </symbol>
+  <symbol id="tinyHeart" viewBox="0 0 20 18">
+    <path d="M10 18 C 2 12, -1 6, 3 2 C 6 -1, 10 1, 10 5 C 10 1, 14 -1, 17 2 C 21 6, 18 12, 10 18 Z" fill="url(#zPink)"></path>
+  </symbol>
+
+  <!-- ============ butterfly ============ -->
+  <defs>
+    <radialgradient id="wingGradA" cx="30%" cy="30%" r="85%">
+      <stop offset="0%" stop-color="#fff2fb"></stop>
+      <stop offset="45%" stop-color="#e6a3de"></stop>
+      <stop offset="100%" stop-color="#a95bc4"></stop>
+    </radialgradient>
+    <radialgradient id="wingGradB" cx="30%" cy="30%" r="85%">
+      <stop offset="0%" stop-color="#fff8e2"></stop>
+      <stop offset="45%" stop-color="#ffd06b"></stop>
+      <stop offset="100%" stop-color="#ff9a3d"></stop>
+    </radialgradient>
+  </defs>
+  <symbol id="critterButterfly" viewBox="0 0 100 90">
+    <g filter="url(#zSoft)">
+      <g class="wing-l">
+        <path d="M48 40 C 20 8, -6 22, 10 46 C 22 52, 38 48, 48 40 Z" fill="url(#wingGradA)"></path>
+        <path d="M48 44 C 28 46, 12 62, 24 74 C 34 74, 44 60, 48 44 Z" fill="url(#wingGradB)"></path>
+      </g>
+      <g class="wing-r">
+        <path d="M52 40 C 80 8, 106 22, 90 46 C 78 52, 62 48, 52 40 Z" fill="url(#wingGradA)"></path>
+        <path d="M52 44 C 72 46, 88 62, 76 74 C 66 74, 56 60, 52 44 Z" fill="url(#wingGradB)"></path>
+      </g>
+      <ellipse cx="50" cy="48" rx="4" ry="24" fill="#6b3d55"></ellipse>
+      <path d="M48 26 C 44 18, 38 14, 34 15" stroke="#6b3d55" stroke-width="1.4" fill="none" stroke-linecap="round"></path>
+      <path d="M52 26 C 56 18, 62 14, 66 15" stroke="#6b3d55" stroke-width="1.4" fill="none" stroke-linecap="round"></path>
+      <circle cx="34" cy="15" r="1.6" fill="#6b3d55"></circle>
+      <circle cx="66" cy="15" r="1.6" fill="#6b3d55"></circle>
+    </g>
+  </symbol>
+
+  <!-- ============ balloon ============ -->
+  <symbol id="balloonShape" viewBox="0 0 60 90">
+    <path d="M30 2 C 48 2, 54 24, 46 40 C 42 50, 34 54, 30 58 C 26 54, 18 50, 14 40 C 6 24, 12 2, 30 2 Z"></path>
+    <ellipse cx="21" cy="20" rx="5" ry="9" fill="#ffffff" opacity=".35"></ellipse>
+    <path d="M30 58 L27 63 L33 66 L28 70" stroke="#8a6a52" stroke-width="1.2" fill="none" stroke-linecap="round"></path>
+  </symbol>
+</svg>
+
+<script>
+/* ======================= НАЛАШТУВАННЯ ======================= */
+const SISTER_NAME = "Сестричко";        // ← встав ім'я сестри
+const SENDER_NAME  = "З любов'ю, твоя родина";        // ← підпис в кінці (напр. "Твоя сестра Оля")
+
+document.getElementById('coverName').textContent = SISTER_NAME;
+
+/* Кожній сторінці відповідає photo-N.jpg поруч із файлом (необов'язково —
+   якщо файлу немає, буде показано акуратну рамку-заглушку). */
+const PAGES = [
+  { text: `Дівчинка- перлинка,золота краплинка, кругленькі оченятка, пухкенькі рученятка !` },
+  { text: `Ростом невеличка,і швидка - швиденька, це моя сестричка, ще сама маленька, швидко так мене взяла ,і додому понесла ! Будь щаслива і любима ,моя ,дорогенька !` },
+  { text: `Ти моє крило надії,Це у любові вміння жити, і життям цим дорожити! Люблю тебе, сестричко,я !` },
+  { text: `Коли ти вдома,не буває скучно,твій вогник Світла радує серця! Ти наш промінчик Світла , Живи так літ до 💯 !!!` },
+  { text: `Щирих друзів тобі поряд, Маленькі радості щодня!` },
+  { text: `Найкраща подружка моя ! Також вітаю тебе я! Завжди будь радісна, весела, така як є, сама собой!!!` },
+  { text: `Радій життю ,вір у себе , насолоджуйся кожною миттю,разом з найріднішими- це Безцінно !!!` },
+  { text: `Шле Вітання Хресна мама і її дорослий син !!! Хай Мрії всі збуваються і Все в житті Вдається!!!` },
+  { text: `Мила наша донечка! Досягай своїх цілей і сміливо іди по життю!!!` },
+  { text: `Маленькими кроками до Великого Щастя ! Вір у себе!!!` },
+  { text: `Щоб доля тобі завжди усміхалася! Щоб люди привітні і добрі траплялися ! Хай Бог береже тебе,мила моя ,і буде щасливим твоє життя !!!` },
+  { text: `З днем народження, рідна! Обіймаєм міцно-міцно і бажаєм, щоб це свято стало лише початком чудового року.<br><br>${SENDER_NAME} ♥`, isLast:true },
+];
+
+/* ======================= ambient sparkles ======================= */
+const sparkleField = document.getElementById('sparkleField');
+for(let i=0;i<26;i++){
+  const s=document.createElement('div');
+  s.className='sparkle';
+  const size=2+Math.random()*3;
+  s.style.width=size+'px'; s.style.height=size+'px';
+  s.style.left=Math.random()*100+'%';
+  s.style.top=(60+Math.random()*40)+'%';
+  s.style.animationDuration=(6+Math.random()*8)+'s';
+  s.style.animationDelay=(Math.random()*8)+'s';
+  sparkleField.appendChild(s);
+}
+
+/* ======================= shatter effect ======================= */
+function shatter(x, y){
+  const flash=document.createElement('div');
+  flash.className='flash-ring';
+  const size=90;
+  flash.style.width=size+'px'; flash.style.height=size+'px';
+  flash.style.left=x+'px'; flash.style.top=y+'px';
+  document.body.appendChild(flash);
+  setTimeout(()=>flash.remove(), 1700);
+
+  const count = 46;
+  for(let i=0;i<count;i++){
+    const shard=document.createElement('div');
+    shard.className='shard';
+    const w = 6+Math.random()*14;
+    const h = 6+Math.random()*14;
+    shard.style.width=w+'px';
+    shard.style.height=h+'px';
+    const skew = Math.random()*40-20;
+    shard.style.clipPath = `polygon(${Math.random()*40}% 0%, 100% ${Math.random()*40}%, ${60+Math.random()*40}% 100%, 0% ${60+Math.random()*40}%)`;
+    shard.style.left = x+'px';
+    shard.style.top = y+'px';
+    document.body.appendChild(shard);
+
+    const angle = Math.random()*Math.PI*2;
+    const dist = 120 + Math.random()*380;
+    const dx = Math.cos(angle)*dist;
+    const dy = Math.sin(angle)*dist - 40; // slight upward bias
+    const rot = (Math.random()*720-360);
+    const duration = 1500 + Math.random()*700;
+    const delay = Math.random()*160;
+
+    shard.animate([
+      { transform:`translate(-50%,-50%) translate(0px,0px) rotate(0deg) scale(1)`, opacity:1, offset:0 },
+      { transform:`translate(-50%,-50%) translate(${dx*0.55}px,${dy*0.55 - 30}px) rotate(${rot*0.6}deg) scale(1.05)`, opacity:1, offset:0.45 },
+      { transform:`translate(-50%,-50%) translate(${dx}px,${dy+220}px) rotate(${rot}deg) scale(.5)`, opacity:0, offset:1 }
+    ], {
+      duration, delay, easing:'cubic-bezier(.25,.65,.35,1)', fill:'forwards'
+    });
+
+    setTimeout(()=>shard.remove(), duration+delay+80);
+  }
+}
+
+/* ======================= cover -> book ======================= */
+const openBtn = document.getElementById('openBtn');
+const cover = document.getElementById('cover');
+const pagesWrap = document.getElementById('pages-wrap');
+
+openBtn.addEventListener('click', ()=>{
+  openBtn.classList.add('cracking');
+  const r = openBtn.getBoundingClientRect();
+  shatter(r.left+r.width/2, r.top+r.height/2);
+  openBtn.classList.add('hidden-btn');
+
+  setTimeout(()=>{
+    cover.classList.add('leaving');
+  }, 650);
+
+  setTimeout(()=>{
+    pagesWrap.classList.add('active');
+    cover.style.display='none';
+  }, 1500);
+});
+
+/* ======================= book pages ======================= */
+const stage = document.getElementById('page-stage');
+const dotsWrap = document.getElementById('dots');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+let current = 0;
+let animating = false;
+
+const CRITTER_SET = [
+  { id:'critterBunny',    mode:'walk',    pos:'bottom' },
+  { id:'critterCat',      mode:'walk',    pos:'bottom' },
+  { id:'critterBird',     mode:'fly',     pos:'top'    },
+  { id:'critterButterfly',mode:'flutter', pos:'top'    },
+];
+const TWINKLE_ICONS = ['tinyStar','tinyHeart'];
+const PALETTE = ['var(--pink)','var(--gold)','var(--mint)','var(--sky)','var(--lilac)','var(--coral)','var(--sun)'];
+
+function buildCritterTracks(i){
+  const types = [0,1,2].map(k => CRITTER_SET[(i+k)%CRITTER_SET.length]);
+  let bottomCount=0, topCount=0;
+  return types.map((c, idx)=>{
+    const duration = 7 + ((i+idx)%5)*1.3;
+    const delay = ((i*0.5)+idx*0.8)%3;
+    let posStyle, zoneIndex;
+    if(c.pos==='top'){ zoneIndex=topCount; posStyle=`top:${8+topCount*32}px;`; topCount++; }
+    else { zoneIndex=bottomCount; posStyle=`bottom:${8+bottomCount*32}px;`; bottomCount++; }
+    const size = zoneIndex>0 ? 34 : 46;
+    const opacity = zoneIndex>0 ? 0.82 : 1;
+    const bobClass = c.mode==='flutter' ? 'flutter' : (c.mode==='fly' ? 'fly' : '');
+    return `
+      <div class="critter-track" style="${posStyle}">
+        <div class="critter-inner" style="animation-duration:${duration}s; animation-delay:${delay}s;">
+          <div class="critter-bob ${bobClass}" style="opacity:${opacity};">
+            <svg class="critter-svg" style="width:${size}px; height:${size}px;" viewBox="0 0 100 100"><use href="#${c.id}"/></svg>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function buildBalloons(i){
+  const colors = [PALETTE[i%PALETTE.length], PALETTE[(i+3)%PALETTE.length]];
+  const lefts = [10, 84];
+  return colors.map((color, idx)=>{
+    const duration = 6 + ((i+idx)%4)*1.1;
+    const delay = (idx*1.4 + i*0.4)%3;
+    return `<div class="balloon" style="left:${lefts[idx]}%; bottom:60px; animation-duration:${duration}s; animation-delay:${delay}s;">
+      <svg viewBox="0 0 60 90"><use href="#balloonShape" fill="${color}"/></svg>
+    </div>`;
+  }).join('');
+}
+
+function buildGarland(i){
+  let flags='';
+  for(let k=0;k<9;k++){
+    flags += `<div class="flag" style="background:${PALETTE[(i+k)%PALETTE.length]}"></div>`;
+  }
+  return `<div class="garland">${flags}</div>`;
+}
+
+function buildConfetti(i){
+  let pieces='';
+  const shapes = ['50%','2px','0'];
+  for(let k=0;k<9;k++){
+    const color = PALETTE[(i+k*2)%PALETTE.length];
+    const size = 4 + (k%3)*2;
+    const left = (k*11 + (i*7)%10) % 96;
+    const top = 15 + (k*9)%70;
+    const duration = 3.5 + (k%4)*1.1;
+    const delay = (k*0.4 + i*0.2)%3;
+    const radius = shapes[k%shapes.length];
+    pieces += `<div class="confetti-piece" style="left:${left}%; top:${top}%; width:${size}px; height:${size}px; background:${color}; border-radius:${radius}; animation-duration:${duration}s; animation-delay:${delay}s;"></div>`;
+  }
+  return pieces;
+}
+
+function buildTwinkles(i){
+  const spots = [
+    {top:'6%', left:'8%'}, {top:'12%', left:'80%'}, {top:'48%', left:'89%'},
+    {top:'58%', left:'6%'}, {top:'80%', left:'78%'}
+  ];
+  return spots.map((pos, idx)=>{
+    const icon = TWINKLE_ICONS[(i+idx) % TWINKLE_ICONS.length];
+    const delay = (idx*0.7 + i*0.3) % 2.6;
+    const hue = (idx*47 + i*23) % 60 - 20;
+    return `<svg class="deco-twinkle" viewBox="0 0 20 20" style="top:${pos.top}; left:${pos.left}; animation-delay:${delay}s; filter:hue-rotate(${hue}deg);"><use href="#${icon}"/></svg>`;
+  }).join('');
+}
+
+function buildPageContent(i){
+  const p = PAGES[i];
+  const el = document.createElement('div');
+  el.className='page';
+
+  const bqTL = `<svg class="bq-corner" viewBox="0 0 140 150" style="width:70px; top:-18px; left:-18px; filter:hue-rotate(${(i*35)%40-10}deg)"><use href="#zephyrBouquet"/></svg>`;
+  const bqBR = `<svg class="bq-corner" viewBox="0 0 140 150" style="width:70px; bottom:-18px; right:-18px; transform:scaleX(-1); filter:hue-rotate(${(i*20)%30}deg)"><use href="#zephyrBouquet"/></svg>`;
+
+  el.innerHTML = `
+    ${bqTL}
+    <div class="corner-mark tr"></div>
+    <div class="corner-mark bl"></div>
+    ${buildConfetti(i)}
+    ${buildTwinkles(i)}
+    ${buildBalloons(i)}
+    ${buildGarland(i)}
+    <div class="page-title-small">${String(i+1).padStart(2,'0')} / 12</div>
+    <div class="photo-frame" style="background-image:url('photo-${i+1}.jpg')">
+    </div>
+    <div class="page-greeting">${p.text}</div>
+    ${buildCritterTracks(i)}
+    ${bqBR}
+    <div class="page-num">${i+1}</div>
+  `;
+  return el;
+}
+
+function renderDots(){
+  dotsWrap.innerHTML='';
+  PAGES.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='dot'+(i===current?' on':'');
+    dotsWrap.appendChild(d);
+  });
+}
+
+function initStage(){
+  stage.innerHTML='';
+  const el = buildPageContent(current);
+  stage.appendChild(el);
+  updateNav();
+  renderDots();
+}
+
+function updateNav(){
+  prevBtn.disabled = current===0;
+  nextBtn.disabled = current===PAGES.length-1;
+}
+
+function flip(direction){
+  if(animating) return;
+  const targetIndex = current + direction;
+  if(targetIndex<0 || targetIndex>=PAGES.length) return;
+  animating = true;
+
+  const btnRect = (direction>0?nextBtn:prevBtn).getBoundingClientRect();
+  shatter(btnRect.left+btnRect.width/2, btnRect.top+btnRect.height/2);
+
+  const currentEl = stage.querySelector('.page:not(.below)') || stage.lastElementChild;
+  const nextEl = buildPageContentSafe(targetIndex);
+  nextEl.classList.add('below');
+  stage.insertBefore(nextEl, currentEl);
+
+  currentEl.classList.add(direction>0?'turning':'turning-back');
+
+  setTimeout(()=>{
+    currentEl.remove();
+    nextEl.classList.remove('below');
+    current = targetIndex;
+    updateNav();
+    renderDots();
+    animating = false;
+  }, 1080);
+}
+
+function buildPageContentSafe(i){
+  return buildPageContent(i);
+}
+
+prevBtn.addEventListener('click', ()=>flip(-1));
+nextBtn.addEventListener('click', ()=>flip(1));
+
+document.addEventListener('keydown', (e)=>{
+  if(!pagesWrap.classList.contains('active')) return;
+  if(e.key==='ArrowRight') flip(1);
+  if(e.key==='ArrowLeft') flip(-1);
+});
+
+/* swipe support */
+let touchX=null;
+stage.addEventListener('touchstart', e=>{ touchX=e.touches[0].clientX; });
+stage.addEventListener('touchend', e=>{
+  if(touchX===null) return;
+  const dx = e.changedTouches[0].clientX - touchX;
+  if(Math.abs(dx)>50){ flip(dx<0?1:-1); }
+  touchX=null;
+});
+
+initStage();
+
+/* ======================= extra decor on cover ======================= */
+(function decorateCover(){
+  const extra = document.createElement('div');
+  extra.innerHTML = `
+    ${buildConfetti(0)}
+    ${buildTwinkles(0)}
+    ${buildBalloons(0)}
+    <div style="position:absolute; top:14px; left:0; right:0;">${buildGarland(0)}</div>
+    <div class="critter-track" style="top:44px;">
+      <div class="critter-inner" style="animation-duration:11s; animation-delay:.6s;">
+        <div class="critter-bob flutter">
+          <svg class="critter-svg" style="width:36px;height:36px;" viewBox="0 0 100 100"><use href="#critterButterfly"/></svg>
+        </div>
+      </div>
+    </div>
+  `;
+  while(extra.firstChild){ cover.appendChild(extra.firstChild); }
+})();
+</script>
+
+<audio id="bg-music" loop preload="auto">
+    <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+document.addEventListener('click', function() {
+    document.getElementById('bg-music').play();
+}, { once: true });
+</script>
+
+</body></html>
